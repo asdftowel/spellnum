@@ -145,7 +145,7 @@ sealed class SpellNum {
     static int Main(string[] args) {
         var addOne = false;
         var spelling = new StringBuilder();
-        long userNum;
+        long userNum, divisor;
         int magnitude, hundreds, tens, units;
 
         try {
@@ -174,31 +174,44 @@ sealed class SpellNum {
         }
 
         magnitude = (int)Math.Log10(userNum) / 3;
-        if (magnitude != 0) {
-            for (
-                var (i, divisor) = (
-                    28 + magnitude,
-                    new[] {
-                        1_000L,
-                        1_000_000L,
-                        1_000_000_000L,
-                        1_000_000_000_000L,
-                        1_000_000_000_000_000L,
-                        1_000_000_000_000_000_000L
-                    }[magnitude - 1]
+        switch (magnitude) {
+            case 0:
+                divisor = 0L;
+                break;
+            case 1:
+                divisor = 1_000L;
+                break;
+            case 2:
+                divisor = 1_000_000L;
+                break;
+            case 3:
+                divisor = 1_000_000_000L;
+                break;
+            case 4:
+                divisor = 1_000_000_000_000L;
+                break;
+            case 5:
+                divisor = 1_000_000_000_000_000L;
+                break;
+            case 6:
+                divisor = 1_000_000_000_000_000_000L;
+                break;
+            default:
+                Console.WriteLine(
+                    "This case should be unreachable because userNum" +
+                    "is 64 bits wide."
                 );
-                i != 28;
-                --i, divisor /= 1000
-            ) {
-                (hundreds, tens, units) = ExtractHundred(
-                    in (int)Math.DivRem(userNum, divisor, out userNum)
-                );
-                spelling.Append(
-                    BuildRepr(in hundreds, in tens, in units, in names[i])
-                );
-            }
-            userNum += Convert.ToInt64(addOne);
+                return 1;
         }
+        for (var i = 28 + magnitude; i != 28; --i, divisor /= 1000) {
+            (hundreds, tens, units) = ExtractHundred(
+                in (int)Math.DivRem(userNum, divisor, out userNum)
+            );
+            spelling.Append(
+                BuildRepr(in hundreds, in tens, in units, in names[i])
+            );
+        }
+        userNum += Convert.ToInt64(addOne);
 
         (hundreds, tens, units) = ExtractHundred(in (int)userNum);
         spelling.Append(BuildRepr(in hundreds, in tens, in units, in names[0]));
