@@ -167,7 +167,7 @@ sealed class SpellNum {
             spelling.Append("minus");
             if (userNum == long.MinValue) {
                 userNum = long.MaxValue;
-                addOne  = true;
+                addOne = true;
             } else {
                 userNum = Math.Abs(userNum);
             }
