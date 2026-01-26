@@ -104,12 +104,12 @@ sealed class SpellNum {
             hasTens = tens != 0,
             hasUnits = units != 0;
         var parts = new[] {
-            String.Empty,
+            string.Empty,
             names[hundreds],
-            String.Empty,
-            String.Empty,
+            string.Empty,
+            string.Empty,
             names[tens],
-            String.Empty,
+            string.Empty,
             names[units],
             magName 
         };
@@ -123,7 +123,7 @@ sealed class SpellNum {
         if (hasUnits) {
             parts[5] = hasTens ? "-" : " ";
         }
-        return String.Concat(parts);
+        return string.Concat(parts);
     }
 
     /// <summary>
@@ -160,10 +160,7 @@ sealed class SpellNum {
             return 1;
         }
 
-        if (userNum == 0) {
-            spelling.Append("zero");
-            goto ExitEarly;
-        } else if (userNum < 0) {
+        if (userNum < 0L) {
             spelling.Append("minus");
             if (userNum == long.MinValue) {
                 userNum = long.MaxValue;
@@ -172,8 +169,13 @@ sealed class SpellNum {
                 userNum = Math.Abs(userNum);
             }
         }
+        if (userNum == 0L) {
+            spelling.Append("zero");
+            magnitude = 0;
+        } else {
+            magnitude = (int)Math.Log10(userNum) / 3;
+        }
 
-        magnitude = (int)Math.Log10(userNum) / 3;
         switch (magnitude) {
             case 0:
                 divisor = 0L;
@@ -203,7 +205,7 @@ sealed class SpellNum {
                 );
                 return 1;
         }
-        for (var i = 28 + magnitude; i != 28; --i, divisor /= 1000) {
+        for (var i = 28 + magnitude; i != 28; --i, divisor /= 1_000L) {
             (hundreds, tens, units) = ExtractHundred(
                 in (int)Math.DivRem(userNum, divisor, out userNum)
             );
@@ -215,7 +217,6 @@ sealed class SpellNum {
 
         (hundreds, tens, units) = ExtractHundred(in (int)userNum);
         spelling.Append(BuildRepr(in hundreds, in tens, in units, in names[0]));
-        ExitEarly:
         Console.WriteLine(spelling.ToString().TrimStart());
         return 0;
     }
