@@ -150,7 +150,10 @@ sealed class SpellNum {
 
         try {
             userNum = args.Length == 1 ? long.Parse(args[0]) : throw
-                new ArgumentException("Please provide an integer to spell.");
+                new ArgumentException(
+                    "Please provide an integer to spell.",
+                    "args"
+                );
         } catch (Exception e) when (
             e is FormatException   |
             e is ArgumentException |
@@ -200,6 +203,8 @@ sealed class SpellNum {
                 break;
             default:
                 throw new ArgumentOutOfRangeException(
+                    "magnitude",
+                    magnitude,
                     "This case should be unreachable because " +
                     "userNum is 64 bits wide."
                 );
