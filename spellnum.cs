@@ -199,11 +199,10 @@ sealed class SpellNum {
                 divisor = 1_000_000_000_000_000_000L;
                 break;
             default:
-                Console.WriteLine(
-                    "This case should be unreachable because userNum" +
-                    "is 64 bits wide."
+                throw new ArgumentOutOfRangeException(
+                    "This case should be unreachable because " +
+                    "userNum is 64 bits wide."
                 );
-                return 1;
         }
         for (var i = 28 + magnitude; i != 28; --i, divisor /= 1_000L) {
             (hundreds, tens, units) = ExtractHundred(
